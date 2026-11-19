@@ -61,8 +61,15 @@ state = json.load(open("state.json")) if os.path.exists("state.json") else {"fb"
 fails = 0
 for plat in PLATFORMS:
     if plat == "ig" and not IG_ID:
-        print("ig: kein IG_USER_ID, uebersprungen")
-        continue
+        try:
+            r = call("GET", f"{API}/{PAGE_ID}?fields=instagram_business_account&access_token={TOKEN}")
+            IG_ID = r.get("instagram_business_account", {}).get("id", "")
+        except Exception as e:
+            print("ig: Abfrage fehlgeschlagen", str(e)[:200])
+        if not IG_ID:
+            print("::error::ig: Instagram nicht mit Seite verknuepft")
+            continue
+        print("ig: Konto-ID gefunden")
     done = state.setdefault(plat, [])
     todo = [v for v in vids if v["n"] not in done][:COUNT]
     for v in todo:
