@@ -71,7 +71,7 @@ for plat in PLATFORMS:
             print(plat, "OK Video", v["n"], res)
             done.append(v["n"])
         except Exception as e:
-            print(plat, "FEHLER Video", v["n"], e)
+            print(f"::error::{plat} FEHLER Video {v['n']}: {str(e)[:350]}")
             fails += 1
             break
         finally:

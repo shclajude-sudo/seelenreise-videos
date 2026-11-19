@@ -4,6 +4,8 @@ on:
     - cron: "0 7 * * *"
     - cron: "0 12 * * *"
     - cron: "0 17 * * *"
+  push:
+    paths: ["trigger.txt"]
   workflow_dispatch:
     inputs:
       count:
@@ -25,7 +27,7 @@ jobs:
           META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
           IG_USER_ID: ${{ vars.IG_USER_ID }}
           COUNT: ${{ github.event.inputs.count || '1' }}
-          PLATFORMS: ${{ github.event.inputs.platforms || 'fb,ig' }}
+          PLATFORMS: ${{ github.event.inputs.platforms || (github.event_name == 'push' && 'fb' || 'fb,ig') }}
         run: python3 publish.py
       - name: Status speichern
         if: always()
